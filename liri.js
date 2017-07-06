@@ -6,23 +6,25 @@ var userChoice = input[3];
 for (var i = 4; i < input.length; i++) {
   userChoice = userChoice + " " + input[i];
 }
-function allCommands(command){
-switch (command) {
-  case "my-tweets":
-    tweets();
-    break;
-  case "spotify-this-song":
-    spotify();
-    break;
-  case "movie-this":
-    movie();
-    break;
-  case "do-what-it-says":
-    doWhat();
-    break;
-}
+
+function allCommands(command) {
+  switch (command) {
+    case "my-tweets":
+      tweets();
+      break;
+    case "spotify-this-song":
+      spotify();
+      break;
+    case "movie-this":
+      movie();
+      break;
+    case "do-what-it-says":
+      doWhat();
+      break;
+  }
 }
 allCommands(command);
+
 function tweets() {
   var Twitter = require('twitter');
   var clientK = require("./keys.js");
@@ -116,6 +118,6 @@ function doWhat() {
     dataArr = data.split(",");
     command = dataArr[0];
     userChoice = dataArr[1].trim();
-      allCommands(command);
+    allCommands(command);
   });
 }
