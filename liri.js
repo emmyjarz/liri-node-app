@@ -1,12 +1,14 @@
 var dataArr;
+var keys = require("./keys.js")
 var input = process.argv;
 var command = input[2];
 var userChoice = "";
 //userChoice are more than 1 word
 for (var i = 3; i < input.length; i++) {
-  userChoice += input[i] + " ";
+  userChoice += " " + input[i];
 }
-// console.log(userChoice)
+userChoice.trim();
+
 function allCommands(command) {
   switch (command) {
     case "my-tweets":
@@ -27,8 +29,7 @@ allCommands(command);
 
 function tweets() {
   var Twitter = require('twitter');
-  var clientK = require("./keys.js");
-  var client = new Twitter(clientK.twitterKeys);
+  var client = new Twitter(keys.twitterKeys);
   var params = {
     screen_name: "emmyjarz",
     count: 20
@@ -46,27 +47,17 @@ function tweets() {
 
 function spotify() {
   var Spotify = require("node-spotify-api");
-  var spotifyK = require("./keys.js");
-  var spotify = new Spotify(spotifyK.spotifyKeys);
+  var spotify = new Spotify(keys.spotifyKeys);
   // console.log(spotify);
   if (userChoice == "") {
     spotify.search({
-      // type: ["track", "artist"],
-      // query: ["The Sign", "Ace of Base"],
-      //console.log the above to get result or do the below solution
-      type: "track",
-      query: "The Sign",
-      limit: 5
+      type: ["track", "artist"],
+      query: ["The Sign", "Ace of Base"],
     }, function(err, data) {
       if (err) {
         return console.log(err);
       }
-      for (var i = 0; i < 5; i++) {
-        var song = data.tracks.items[i];
-        if (song.artists[0].name == "Ace of Base") {
-          music(song);
-        }
-      }
+      music(data);
     });
   } else {
     spotify.search({
@@ -76,8 +67,7 @@ function spotify() {
       if (err) {
         return console.log(err);
       }
-      var song = data.tracks.items[0];
-      music(song);
+      music(data);
     });
   }
 }
@@ -100,12 +90,11 @@ function movie() {
         console.log("Title: ", display.Title);
         console.log("Year: ", display.Year);
         console.log("IMDB Rating: ", display.imdbRating);
-        for (var i = 0; i < display.Ratings.length; i++) {
-          if (display.Ratings.Source === 'Rotten Tomatoes') {
-            console.log("Rotten Tomatoes Rating: ", display.Ratings[1].Value);
-          }
+        if (display.Ratings[1] == undefined) {
+          console.log("Sorry, there is no Rotten Tomatoes Rating for this moive.")
+        } else {
+          console.log("Rotten Tomatoes Rating: ", display.Ratings[1].Value);
         }
-        console.log("Sorry, there is no Rotten Tomatoes Rating for this moive.")
         console.log("Country: ", display.Country);
         console.log("Language: ", display.Language);
         console.log("Plot: ", display.Plot);
@@ -129,7 +118,8 @@ function doWhat() {
   });
 }
 
-function music(song) {
+function music(data) {
+  var song = data.tracks.items[0];
   console.log("Artist(s): ", song.artists[0].name);
   console.log("Song's name: ", song.name);
   console.log("URL: ", song.preview_url);
