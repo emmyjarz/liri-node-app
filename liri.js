@@ -51,13 +51,21 @@ function spotify() {
   // console.log(spotify);
   if (userChoice == "") {
     spotify.search({
-      type: ["track", "artist"],
-      query: ["The Sign", "Ace of Base"],
+      // type: ["track", "artist"],
+      // query: ["The Sign", "Ace of Base"],
+      type: "track",
+      query: "The Sign",
+      limit: 10
     }, function(err, data) {
       if (err) {
         return console.log(err);
       }
-      music(data);
+      for (var i = 0; i < data.tracks.items.length; i++) {
+        if (data.tracks.items[i].artists[0].name === "Ace of Base") {
+          var song = data.tracks.items[i];
+          music(song);
+        }
+      }
     });
   } else {
     spotify.search({
@@ -67,7 +75,8 @@ function spotify() {
       if (err) {
         return console.log(err);
       }
-      music(data);
+      var song = data.tracks.items[0];
+      music(song);
     });
   }
 }
@@ -118,8 +127,7 @@ function doWhat() {
   });
 }
 
-function music(data) {
-  var song = data.tracks.items[0];
+function music(song) {
   console.log("Artist(s): ", song.artists[0].name);
   console.log("Song's name: ", song.name);
   console.log("URL: ", song.preview_url);
